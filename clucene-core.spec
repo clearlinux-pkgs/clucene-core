@@ -4,7 +4,7 @@
 #
 Name     : clucene-core
 Version  : 2.3.3.4
-Release  : 4
+Release  : 5
 URL      : https://iweb.dl.sourceforge.net/project/clucene/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Source0  : https://iweb.dl.sourceforge.net/project/clucene/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Summary  : No detailed summary available
@@ -14,6 +14,7 @@ Requires: clucene-core-lib
 BuildRequires : boost-dev
 BuildRequires : cmake
 BuildRequires : zlib-dev
+Patch1: clucene-core-2.3.3.4-install_contribs_lib.patch
 
 %description
 ==============
@@ -44,13 +45,14 @@ lib components for the clucene-core package.
 
 %prep
 %setup -q -n clucene-core-2.3.3.4
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1522443448
+export SOURCE_DATE_EPOCH=1522443967
 mkdir clr-build
 pushd clr-build
 cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=/usr/lib64 -DCMAKE_AR=/usr/bin/gcc-ar -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_RANLIB=/usr/bin/gcc-ranlib -DBUILD_CONTRIBS=on -DBUILD_CONTRIBS_LIB=on
@@ -58,20 +60,11 @@ make  %{?_smp_mflags} clucene-contribs-lib
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1522443448
+export SOURCE_DATE_EPOCH=1522443967
 rm -rf %{buildroot}
 pushd clr-build
 %make_install
 popd
-## make_install_append content
-pushd clr-build
-make  %{?_smp_mflags} clucene-contribs-lib
-mkdir -p %{buildroot}/usr/lib64
-cp bin/libclucene-contribs-lib.so*  %{buildroot}/usr/lib64
-cd src/contribs-lib
-make DESTDIR=%buildroot install
-popd
-## make_install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -88,6 +81,12 @@ popd
 /usr/include/CLucene/analysis/AnalysisHeader.h
 /usr/include/CLucene/analysis/Analyzers.h
 /usr/include/CLucene/analysis/CachingTokenFilter.h
+/usr/include/CLucene/analysis/LanguageBasedAnalyzer.h
+/usr/include/CLucene/analysis/PorterStemmer.h
+/usr/include/CLucene/analysis/cjk/CJKAnalyzer.h
+/usr/include/CLucene/analysis/de/GermanAnalyzer.h
+/usr/include/CLucene/analysis/de/GermanStemFilter.h
+/usr/include/CLucene/analysis/de/GermanStemmer.h
 /usr/include/CLucene/analysis/standard/StandardAnalyzer.h
 /usr/include/CLucene/analysis/standard/StandardFilter.h
 /usr/include/CLucene/analysis/standard/StandardTokenizer.h
@@ -286,6 +285,21 @@ popd
 /usr/include/CLucene/ext/boost/smart_ptr/weak_ptr.hpp
 /usr/include/CLucene/ext/boost/throw_exception.hpp
 /usr/include/CLucene/ext/boost/version.hpp
+/usr/include/CLucene/highlighter/Encoder.h
+/usr/include/CLucene/highlighter/Formatter.h
+/usr/include/CLucene/highlighter/Fragmenter.h
+/usr/include/CLucene/highlighter/HighlightScorer.h
+/usr/include/CLucene/highlighter/Highlighter.h
+/usr/include/CLucene/highlighter/QueryScorer.h
+/usr/include/CLucene/highlighter/QueryTermExtractor.h
+/usr/include/CLucene/highlighter/Scorer.h
+/usr/include/CLucene/highlighter/SimpleFragmenter.h
+/usr/include/CLucene/highlighter/SimpleHTMLEncoder.h
+/usr/include/CLucene/highlighter/SimpleHTMLFormatter.h
+/usr/include/CLucene/highlighter/TextFragment.h
+/usr/include/CLucene/highlighter/TokenGroup.h
+/usr/include/CLucene/highlighter/TokenSources.h
+/usr/include/CLucene/highlighter/WeightedTerm.h
 /usr/include/CLucene/index/DirectoryIndexReader.h
 /usr/include/CLucene/index/IndexDeletionPolicy.h
 /usr/include/CLucene/index/IndexModifier.h
@@ -356,6 +370,39 @@ popd
 /usr/include/CLucene/search/spans/SpanTermQuery.h
 /usr/include/CLucene/search/spans/SpanWeight.h
 /usr/include/CLucene/search/spans/Spans.h
+/usr/include/CLucene/snowball/SnowballAnalyzer.h
+/usr/include/CLucene/snowball/SnowballFilter.h
+/usr/include/CLucene/snowball/include/libstemmer.h
+/usr/include/CLucene/snowball/libstemmer.h
+/usr/include/CLucene/snowball/libstemmer/modules.h
+/usr/include/CLucene/snowball/runtime/api.h
+/usr/include/CLucene/snowball/runtime/header.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_danish.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_dutch.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_english.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_finnish.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_french.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_german.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_italian.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_norwegian.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_porter.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_portuguese.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_spanish.h
+/usr/include/CLucene/snowball/src_c/stem_ISO_8859_1_swedish.h
+/usr/include/CLucene/snowball/src_c/stem_KOI8_R_russian.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_danish.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_dutch.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_english.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_finnish.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_french.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_german.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_italian.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_norwegian.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_porter.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_portuguese.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_russian.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_spanish.h
+/usr/include/CLucene/snowball/src_c/stem_UTF_8_swedish.h
 /usr/include/CLucene/store/Directory.h
 /usr/include/CLucene/store/FSDirectory.h
 /usr/include/CLucene/store/IndexInput.h
@@ -371,6 +418,11 @@ popd
 /usr/include/CLucene/util/Reader.h
 /usr/include/CLucene/util/VoidList.h
 /usr/include/CLucene/util/VoidMap.h
+/usr/include/CLucene/util/arrayinputstream.h
+/usr/include/CLucene/util/byteinputstream.h
+/usr/include/CLucene/util/gzipcompressstream.h
+/usr/include/CLucene/util/gzipinputstream.h
+/usr/include/CLucene/util/streamarray.h
 /usr/lib64/libclucene-contribs-lib.so
 /usr/lib64/libclucene-core.so
 /usr/lib64/libclucene-shared.so
