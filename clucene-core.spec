@@ -4,7 +4,7 @@
 #
 Name     : clucene-core
 Version  : 2.3.3.4
-Release  : 3
+Release  : 4
 URL      : https://iweb.dl.sourceforge.net/project/clucene/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Source0  : https://iweb.dl.sourceforge.net/project/clucene/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Summary  : No detailed summary available
@@ -50,19 +50,28 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1522442743
+export SOURCE_DATE_EPOCH=1522443448
 mkdir clr-build
 pushd clr-build
 cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=/usr/lib64 -DCMAKE_AR=/usr/bin/gcc-ar -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_RANLIB=/usr/bin/gcc-ranlib -DBUILD_CONTRIBS=on -DBUILD_CONTRIBS_LIB=on
-make  %{?_smp_mflags}
+make  %{?_smp_mflags} clucene-contribs-lib
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1522442743
+export SOURCE_DATE_EPOCH=1522443448
 rm -rf %{buildroot}
 pushd clr-build
 %make_install
 popd
+## make_install_append content
+pushd clr-build
+make  %{?_smp_mflags} clucene-contribs-lib
+mkdir -p %{buildroot}/usr/lib64
+cp bin/libclucene-contribs-lib.so*  %{buildroot}/usr/lib64
+cd src/contribs-lib
+make DESTDIR=%buildroot install
+popd
+## make_install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -362,12 +371,15 @@ popd
 /usr/include/CLucene/util/Reader.h
 /usr/include/CLucene/util/VoidList.h
 /usr/include/CLucene/util/VoidMap.h
+/usr/lib64/libclucene-contribs-lib.so
 /usr/lib64/libclucene-core.so
 /usr/lib64/libclucene-shared.so
 /usr/lib64/pkgconfig/libclucene-core.pc
 
 %files lib
 %defattr(-,root,root,-)
+/usr/lib64/libclucene-contribs-lib.so.1
+/usr/lib64/libclucene-contribs-lib.so.2.3.3.4
 /usr/lib64/libclucene-core.so.1
 /usr/lib64/libclucene-core.so.2.3.3.4
 /usr/lib64/libclucene-shared.so.1

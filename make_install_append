@@ -1,0 +1,7 @@
+pushd clr-build
+make  %{?_smp_mflags} clucene-contribs-lib
+mkdir -p %{buildroot}/usr/lib64
+cp bin/libclucene-contribs-lib.so*  %{buildroot}/usr/lib64
+cd src/contribs-lib
+make DESTDIR=%buildroot install
+popd
