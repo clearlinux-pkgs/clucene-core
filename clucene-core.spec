@@ -4,15 +4,16 @@
 #
 Name     : clucene-core
 Version  : 2.3.3.4
-Release  : 6
-URL      : https://iweb.dl.sourceforge.net/project/clucene/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
-Source0  : https://iweb.dl.sourceforge.net/project/clucene/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
+Release  : 7
+URL      : https://sourceforge.net/projects/clucene/files/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
+Source0  : https://sourceforge.net/projects/clucene/files/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : Apache-2.0 LGPL-2.1
 Requires: clucene-core-lib
+Requires: clucene-core-license
 BuildRequires : boost-dev
-BuildRequires : cmake
+BuildRequires : buildreq-cmake
 BuildRequires : zlib-dev
 Patch1: clucene-core-2.3.3.4-install_contribs_lib.patch
 
@@ -38,9 +39,18 @@ dev components for the clucene-core package.
 %package lib
 Summary: lib components for the clucene-core package.
 Group: Libraries
+Requires: clucene-core-license
 
 %description lib
 lib components for the clucene-core package.
+
+
+%package license
+Summary: license components for the clucene-core package.
+Group: Default
+
+%description license
+license components for the clucene-core package.
 
 
 %prep
@@ -52,16 +62,20 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1522443967
+export SOURCE_DATE_EPOCH=1532588957
 mkdir clr-build
 pushd clr-build
-cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=/usr/lib64 -DCMAKE_AR=/usr/bin/gcc-ar -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_RANLIB=/usr/bin/gcc-ranlib -DBUILD_CONTRIBS=on -DBUILD_CONTRIBS_LIB=on
+%cmake .. -DBUILD_CONTRIBS=on -DBUILD_CONTRIBS_LIB=on
 make  %{?_smp_mflags} clucene-contribs-lib
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1522443967
+export SOURCE_DATE_EPOCH=1532588957
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/doc/clucene-core
+cp APACHE.license %{buildroot}/usr/share/doc/clucene-core/APACHE.license
+cp COPYING %{buildroot}/usr/share/doc/clucene-core/COPYING
+cp LGPL.license %{buildroot}/usr/share/doc/clucene-core/LGPL.license
 pushd clr-build
 %make_install
 popd
@@ -436,3 +450,9 @@ popd
 /usr/lib64/libclucene-core.so.2.3.3.4
 /usr/lib64/libclucene-shared.so.1
 /usr/lib64/libclucene-shared.so.2.3.3.4
+
+%files license
+%defattr(-,root,root,-)
+/usr/share/doc/clucene-core/APACHE.license
+/usr/share/doc/clucene-core/COPYING
+/usr/share/doc/clucene-core/LGPL.license
