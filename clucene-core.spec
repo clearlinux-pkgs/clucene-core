@@ -4,7 +4,7 @@
 #
 Name     : clucene-core
 Version  : 2.3.3.4
-Release  : 7
+Release  : 8
 URL      : https://sourceforge.net/projects/clucene/files/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Source0  : https://sourceforge.net/projects/clucene/files/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Summary  : No detailed summary available
