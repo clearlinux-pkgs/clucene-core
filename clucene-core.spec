@@ -4,16 +4,21 @@
 #
 Name     : clucene-core
 Version  : 2.3.3.4
-Release  : 11
+Release  : 12
 URL      : https://sourceforge.net/projects/clucene/files/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Source0  : https://sourceforge.net/projects/clucene/files/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : Apache-2.0 LGPL-2.1
-Requires: clucene-core-lib
-Requires: clucene-core-license
+Requires: clucene-core-lib = %{version}-%{release}
+Requires: clucene-core-license = %{version}-%{release}
+BuildRequires : bash coreutils gzip
 BuildRequires : boost-dev
 BuildRequires : buildreq-cmake
+BuildRequires : doxygen
+BuildRequires : glibc-dev
+BuildRequires : perl
+BuildRequires : texlive
 BuildRequires : zlib-dev
 Patch1: clucene-core-2.3.3.4-install_contribs_lib.patch
 
@@ -29,8 +34,9 @@ as it is written in C++.
 %package dev
 Summary: dev components for the clucene-core package.
 Group: Development
-Requires: clucene-core-lib
-Provides: clucene-core-devel
+Requires: clucene-core-lib = %{version}-%{release}
+Provides: clucene-core-devel = %{version}-%{release}
+Requires: clucene-core = %{version}-%{release}
 
 %description dev
 dev components for the clucene-core package.
@@ -39,7 +45,7 @@ dev components for the clucene-core package.
 %package lib
 Summary: lib components for the clucene-core package.
 Group: Libraries
-Requires: clucene-core-license
+Requires: clucene-core-license = %{version}-%{release}
 
 %description lib
 lib components for the clucene-core package.
@@ -55,27 +61,36 @@ license components for the clucene-core package.
 
 %prep
 %setup -q -n clucene-core-2.3.3.4
+cd %{_builddir}/clucene-core-2.3.3.4
 %patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1532588957
-mkdir clr-build
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1585184631
+mkdir -p clr-build
 pushd clr-build
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %cmake .. -DBUILD_CONTRIBS=on -DBUILD_CONTRIBS_LIB=on
-make  %{?_smp_mflags} clucene-contribs-lib
+make  %{?_smp_mflags}  clucene-contribs-lib
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1532588957
+export SOURCE_DATE_EPOCH=1585184631
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/clucene-core
-cp APACHE.license %{buildroot}/usr/share/doc/clucene-core/APACHE.license
-cp COPYING %{buildroot}/usr/share/doc/clucene-core/COPYING
-cp LGPL.license %{buildroot}/usr/share/doc/clucene-core/LGPL.license
+mkdir -p %{buildroot}/usr/share/package-licenses/clucene-core
+cp %{_builddir}/clucene-core-2.3.3.4/APACHE.license %{buildroot}/usr/share/package-licenses/clucene-core/7df059597099bb7dcf25d2a9aedfaf4465f72d8d
+cp %{_builddir}/clucene-core-2.3.3.4/COPYING %{buildroot}/usr/share/package-licenses/clucene-core/4570602f7785553392928a47e002ddccebaedad6
+cp %{_builddir}/clucene-core-2.3.3.4/LGPL.license %{buildroot}/usr/share/package-licenses/clucene-core/1071adb104a2db491ae9db989a7ae8c31f5e3c7f
 pushd clr-build
 %make_install
 popd
@@ -86,7 +101,7 @@ popd
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
+/usr/include/CLucene.h
 /usr/include/CLucene/CLConfig.h
 /usr/include/CLucene/CLuceneConfig.cmake
 /usr/include/CLucene/LuceneThreads.h
@@ -452,7 +467,7 @@ popd
 /usr/lib64/libclucene-shared.so.2.3.3.4
 
 %files license
-%defattr(-,root,root,-)
-/usr/share/doc/clucene-core/APACHE.license
-/usr/share/doc/clucene-core/COPYING
-/usr/share/doc/clucene-core/LGPL.license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/clucene-core/1071adb104a2db491ae9db989a7ae8c31f5e3c7f
+/usr/share/package-licenses/clucene-core/4570602f7785553392928a47e002ddccebaedad6
+/usr/share/package-licenses/clucene-core/7df059597099bb7dcf25d2a9aedfaf4465f72d8d
