@@ -4,7 +4,7 @@
 #
 Name     : clucene-core
 Version  : 2.3.3.4
-Release  : 12
+Release  : 13
 URL      : https://sourceforge.net/projects/clucene/files/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Source0  : https://sourceforge.net/projects/clucene/files/clucene-core-unstable/2.3/clucene-core-2.3.3.4.tar.gz
 Summary  : No detailed summary available
@@ -69,7 +69,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1585184631
+export SOURCE_DATE_EPOCH=1592615001
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -77,15 +77,15 @@ export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
 export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
 export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %cmake .. -DBUILD_CONTRIBS=on -DBUILD_CONTRIBS_LIB=on
 make  %{?_smp_mflags}  clucene-contribs-lib
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1585184631
+export SOURCE_DATE_EPOCH=1592615001
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/clucene-core
 cp %{_builddir}/clucene-core-2.3.3.4/APACHE.license %{buildroot}/usr/share/package-licenses/clucene-core/7df059597099bb7dcf25d2a9aedfaf4465f72d8d
